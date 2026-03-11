@@ -1,11 +1,14 @@
 import sqlite3
 
+"""Connection with DB and row_factory allows direct dictionary conversion.
+   PRAGMA enforces relational integrity."""
 def db_connect():
     conn = sqlite3.connect("blog.db")
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON")
     return conn
 
+"""SQLite DB connection and table creation on API startup"""
 def init_db():
     conn = db_connect()
     c = conn.cursor()
@@ -37,3 +40,4 @@ def init_db():
     conn.commit()
 
     conn.close()
+
