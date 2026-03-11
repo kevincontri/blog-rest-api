@@ -37,8 +37,8 @@ This application allows creation of users, authoring of posts, and commenting on
 Clone the repository:
 
 ```
-git clone https://github.com/kevincontri/blog-api.git
-cd blog-api
+git clone https://github.com/kevincontri/blog-rest-api.git
+cd blog-rest-api
 ```
 
 Create and activate virtual environment:
@@ -102,7 +102,7 @@ Response:
 }
 ```
 
-Use the returned token as a Bearer token in subsequent requests:
+Use the returned token as a Bearer token in subsequent request headers:
 ```
 Authorization: Bearer eyJhbGc...
 ```
@@ -136,11 +136,11 @@ Returns user information.
 
 ## API Post Endpoints
 
-### Create a post 🔒
+### Create a post (Authentication needed)
 
 `POST /posts`
 
-Requires authentication. The author is determined from the token.
+The author is determined from the token.
 
 Request body:
 ```json
@@ -181,11 +181,11 @@ Supports optional query parameters:
 
 Returns post information with author details.
 
-### Edit a post 🔒
+### Edit a post (Authentication needed)
 
 `PATCH /posts/{post_id}`
 
-Requires authentication. Only the post's author can edit it.
+Only the post's author can edit it.
 
 Request body (any combination of fields):
 ```json
@@ -195,11 +195,11 @@ Request body (any combination of fields):
 }
 ```
 
-### Delete a post 🔒
+### Delete a post (Authentication needed)
 
 `DELETE /posts/{post_id}`
 
-Requires authentication. Only the post's author can delete it.
+Only the post's author can delete it.
 
 Response:
 ```json
@@ -212,11 +212,11 @@ Response:
 
 ## API Comment Endpoints
 
-### Create a comment 🔒
+### Create a comment (Authentication needed)
 
 `POST /posts/{post_id}/comments`
 
-Requires authentication. The author is determined from the token.
+The author is determined from the token.
 
 Request body:
 ```json
@@ -242,11 +242,11 @@ Response:
 
 Returns all comments associated with the given post.
 
-### Delete a comment 🔒
+### Delete a comment (Authentication needed)
 
 `DELETE /comments/{comment_id}`
 
-Requires authentication. Only the comment's author can delete it.
+Only the comment's author can delete it.
 
 Response:
 ```json
@@ -262,4 +262,3 @@ Response:
 * Add password hashing and credential-based login (bcrypt)
 * Migrate to PostgreSQL for production readiness
 * Add refresh tokens for better session management
-* Implement pagination for comments
