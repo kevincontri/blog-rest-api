@@ -11,12 +11,12 @@ app = FastAPI(
     description="A blog built in REST-style, with users, posts and comments, with persistence in SQL"
 )
 
+"""Initialize database connection on startup"""
 @app.on_event("startup")
 async def startup_event():
     init_db()
 
 """User Endpoints"""
-
 @app.post("/users", response_model=UserResponse)
 def create_user(data: UserCreate):
     service = UserService()
@@ -164,4 +164,5 @@ def delete_comment(comment_id: str, current_user_id: str = Depends(get_current_u
     raise HTTPException(
         status_code=404,
         detail="Comment not found"
+
     )
