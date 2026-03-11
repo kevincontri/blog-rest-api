@@ -1,2 +1,265 @@
-# blog-rest-api
-RESTful Blog API in Python using FastAPI and SQLite with JWT authentication, layered architecture, and role-based resource ownership.
+# Blog REST API
+
+A backend service in a REST-style for managing users, posts and comments using `FastAPI`. This project demonstrates fundamental backend development concepts, such as:
+
+* RESTful routing
+* Layered architecture
+* Request and response validation with Pydantic
+* SQL-based persistence with SQLite
+* Relational logic (users, posts and comments)
+* HTTP status handling with FastAPI
+* JWT Authentication and Authorization
+
+This application allows creation of users, authoring of posts, and commenting on posts, with authentication ensuring users can only modify their own content.
+
+## Stack
+
+* Python
+* FastAPI
+* Pydantic
+* SQLite
+* Uvicorn
+* python-jose (JWT)
+
+## Project Structure
+
+* `app.py` - API layer (HTTP routes and request/response handling)
+* `services.py` - Business logic for users, posts and comments
+* `repository.py` - Database access layer (SQL queries)
+* `database.py` - SQLite connection and table initialization
+* `models.py` - Domain entities (`User`, `Post` and `Comment`)
+* `schemas.py` - Pydantic models for request and response validation
+* `auth.py` - JWT token creation and verification
+* `requirements.txt` - Dependencies
+
+## Installation
+
+Clone the repository:
+
+```
+git clone https://github.com/kevincontri/blog-api.git
+cd blog-api
+```
+
+Create and activate virtual environment:
+
+```
+python -m venv venv
+venv\Scripts\activate
+```
+
+Install dependencies:
+
+```
+pip install -r requirements.txt
+```
+
+## Run the server
+
+```
+uvicorn app:app --reload
+```
+
+Open interactive docs:
+
+```
+http://127.0.0.1:8000/docs
+```
+
+---
+
+## Authentication
+
+This API uses JWT Bearer token authentication. Protected routes require a valid token in the `Authorization` header.
+
+### Register
+
+`POST /users`
+
+Request body:
+```json
+{
+  "username": "john"
+}
+```
+
+### Login
+
+`POST /auth/login`
+
+Request body:
+```json
+{
+  "username": "john"
+}
+```
+
+Response:
+```json
+{
+  "access_token": "eyJhbGc...",
+  "token_type": "bearer"
+}
+```
+
+Use the returned token as a Bearer token in subsequent requests:
+```
+Authorization: Bearer eyJhbGc...
+```
+
+---
+
+## API User Endpoints
+
+### Get all users
+
+`GET /users`
+
+Response:
+```json
+[
+  {
+    "id": "uuid",
+    "username": "john",
+    "created_at": "timestamp"
+  }
+]
+```
+
+### Get a specific user
+
+`GET /users/{user_id}`
+
+Returns user information.
+
+---
+
+## API Post Endpoints
+
+### Create a post 🔒
+
+`POST /posts`
+
+Requires authentication. The author is determined from the token.
+
+Request body:
+```json
+{
+  "title": "My first post",
+  "content": "Hello World!"
+}
+```
+
+Response:
+```json
+{
+  "id": "uuid",
+  "title": "My first post",
+  "content": "Hello World!",
+  "author_id": "uuid",
+  "created_at": "timestamp"
+}
+```
+
+### Get all posts
+
+`GET /posts`
+
+Supports optional query parameters:
+
+| Parameter | Type | Description |
+|---|---|---|
+| `author_id` | string | Filter posts by author |
+| `search` | string | Search by title |
+| `sort_by` | string | Sort by `title` or `created_at` |
+| `page` | int | Page number (default: 1) |
+| `limit` | int | Results per page (default: 10) |
+
+### Get a specific post
+
+`GET /posts/{post_id}`
+
+Returns post information with author details.
+
+### Edit a post 🔒
+
+`PATCH /posts/{post_id}`
+
+Requires authentication. Only the post's author can edit it.
+
+Request body (any combination of fields):
+```json
+{
+  "title": "Updated title",
+  "content": "Updated content"
+}
+```
+
+### Delete a post 🔒
+
+`DELETE /posts/{post_id}`
+
+Requires authentication. Only the post's author can delete it.
+
+Response:
+```json
+{
+  "message": "Post Deleted Successfully"
+}
+```
+
+---
+
+## API Comment Endpoints
+
+### Create a comment 🔒
+
+`POST /posts/{post_id}/comments`
+
+Requires authentication. The author is determined from the token.
+
+Request body:
+```json
+{
+  "content": "Great post!"
+}
+```
+
+Response:
+```json
+{
+  "comment_id": "uuid",
+  "content": "Great post!",
+  "author_id": "uuid",
+  "post_id": "uuid",
+  "created_at": "timestamp"
+}
+```
+
+### Get all comments for a post
+
+`GET /posts/{post_id}/comments`
+
+Returns all comments associated with the given post.
+
+### Delete a comment 🔒
+
+`DELETE /comments/{comment_id}`
+
+Requires authentication. Only the comment's author can delete it.
+
+Response:
+```json
+{
+  "message": "Comment deleted successfully"
+}
+```
+
+---
+
+## Future Improvements
+
+* Add password hashing and credential-based login (bcrypt)
+* Migrate to PostgreSQL for production readiness
+* Add refresh tokens for better session management
+* Implement pagination for comments
