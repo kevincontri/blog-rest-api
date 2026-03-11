@@ -7,6 +7,7 @@ SECRET_KEY = "x7#mK9$pL2@nQ"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
+"""Calls '/auth/login' and receives current user token as value"""
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 def create_access_token(user_id: str) -> str:
@@ -16,6 +17,8 @@ def create_access_token(user_id: str) -> str:
     }
     return jwt.encode(payload, SECRET_KEY, ALGORITHM)
 
+"""Dependency chain with oauth2_scheme
+   Credential exceptions for JWT payload validation"""
 def get_current_user(token: str = Depends(oauth2_scheme)) -> str:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -29,4 +32,5 @@ def get_current_user(token: str = Depends(oauth2_scheme)) -> str:
             raise credentials_exception
         return user_id
     except JWTError:
+
         raise credentials_exception
