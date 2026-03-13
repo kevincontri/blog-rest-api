@@ -1,5 +1,7 @@
 # Blog REST API
 
+## Update v2.0: Added password hashing and credential-based login (bcrypt)
+
 A backend service in a REST-style for managing users, posts and comments using `FastAPI`. This project demonstrates fundamental backend development concepts, such as:
 
 * RESTful routing
@@ -19,7 +21,10 @@ This application allows creation of users, authoring of posts, and commenting on
 * Pydantic
 * SQLite
 * Uvicorn
-* python-jose (JWT)
+
+## Dependencies
+* JWT (Authentication)
+* bcrypt (password hashing)
 
 ## Project Structure
 
@@ -79,7 +84,8 @@ This API uses JWT Bearer token authentication. Protected routes require a valid 
 Request body:
 ```json
 {
-  "username": "john"
+  "username": "john",
+  "password": "john123"
 }
 ```
 
@@ -90,7 +96,8 @@ Request body:
 Request body:
 ```json
 {
-  "username": "john"
+  "username": "john",
+  "password": "john123"
 }
 ```
 
@@ -259,6 +266,5 @@ Response:
 
 ## Future Improvements
 
-* Add password hashing and credential-based login (bcrypt)
 * Migrate to PostgreSQL for production readiness
 * Add refresh tokens for better session management
