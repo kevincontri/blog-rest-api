@@ -19,23 +19,29 @@ async def startup_event():
 @app.post("/users", response_model=UserResponse)
 def create_user(data: UserCreate):
     service = UserService()
-    user = service.create_user(data.username)
+    user = service.create_user(data.username, data.password)
     return user.to_dict()
 
 @app.post("/auth/login", response_model=TokenResponse)
 def login(data: LoginRequest):
     service = UserService()
-    user = service.get_user_by_username(data.username)
-    if user:
-        token = create_access_token(user["id"])
+    validate = service.verify_credentials(data.username, data.password)
+    if validate == 1:
+        raise HTTPException(
+            status_code=401,
+            detail="User not found"
+        )
+    elif validate == 2:
+        raise HTTPException(
+            status_code=404,
+            detail="Wrong password"
+        )
+    else:
+        token = create_access_token(validate[0]["id"])
         return {
             "access_token": token,
             "token_type": "bearer"
         }
-    raise HTTPException(
-        status_code=401,
-        detail="User not found"
-    )
 
 @app.get("/users", response_model=List[UserResponse])
 def display_all_users():

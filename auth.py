@@ -2,6 +2,7 @@ from datetime import datetime, timedelta, timezone
 from jose import JWTError, jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
+import bcrypt
 
 SECRET_KEY = "x7#mK9$pL2@nQ"
 ALGORITHM = "HS256"
@@ -30,3 +31,20 @@ def get_current_user(token: str = Depends(oauth2_scheme)) -> str:
         return user_id
     except JWTError:
         raise credentials_exception
+
+def hash_password(password: str) -> str:
+    return bcrypt.hashpw(
+        password.encode("utf-8"),
+        bcrypt.gensalt()
+    ).decode("utf-8")
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    if not hashed_password:
+        return False
+    try:
+        return bcrypt.checkpw(
+            plain_password.encode("utf-8"),
+            hashed_password.encode("utf-8")
+        )
+    except ValueError:
+        return False

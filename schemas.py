@@ -3,6 +3,7 @@ from typing import Optional
 
 class UserCreate(BaseModel):
     username: str
+    password: str
 
 class PostCreate(BaseModel):
     title: str
@@ -44,6 +45,7 @@ class CommentResponse(BaseModel):
 
 class LoginRequest(BaseModel):
     username: str
+    password: str
 
 class TokenResponse(BaseModel):
     access_token: str

@@ -1,12 +1,19 @@
 from repository import UserRepository, PostRepository, CommentRepository
 from models import User, Post, Comment
+from auth import hash_password, verify_password
 
 class UserService():
-    def get_user_by_username(self, username):
-        return UserRepository.get_user_by_username(username)
+    def verify_credentials(self, username, password):
+        rows = UserRepository.get_user_by_username(username)
+        if rows:
+            if verify_password(password, rows[0]["password_hash"]):
+                return rows
+            return 2
+        return 1
 
-    def create_user(self, username):
-        new_user = User(username)
+    def create_user(self, username, password):
+        hashed = hash_password(password)
+        new_user = User(username, hashed)
         UserRepository.create_user(new_user)
         return new_user
 
