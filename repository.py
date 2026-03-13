@@ -7,22 +7,22 @@ class UserRepository:
     def get_user_by_username(username):
         conn = db_connect()
         c = conn.cursor()
-        c.execute("""SELECT id
+        c.execute("""SELECT id, password_hash
                      FROM users
                      WHERE username = ?""",
                      (username,)
                   )
-        row = c.fetchone()
+        rows = c.fetchall()
         conn.close()
-        return dict(row) if row else None
+        return [dict(row) for row in rows]
 
     @staticmethod
     def create_user(user: User):
         conn = db_connect()
         c = conn.cursor()
-        c.execute("""INSERT INTO users 
-                     VALUES (?, ?, ?)""",
-                     (user.id, user.username, user.created_at)
+        c.execute("""INSERT INTO users (id, username, password_hash, created_at)
+                     VALUES (?, ?, ?, ?)""",
+                     (user.id, user.username, user.password_hash, user.created_at)
                   )
         conn.commit()
         conn.close()
