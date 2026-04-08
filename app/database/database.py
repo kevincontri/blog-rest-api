@@ -1,51 +1,45 @@
-import sqlite3
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, Session
+from typing import Optional
+from .base import metadata
+import asyncio
+import os
 
-def db_connect():
-    conn = sqlite3.connect("blog.db")
-    conn.row_factory = sqlite3.Row
-    conn.execute("PRAGMA foreign_keys = ON")
-    return conn
+CONNECTION = os.getenv("DATABASE_URL", "sqlite:///database.db")
 
-def _ensure_users_schema(cursor):
-    columns = {
-        row[1]
-        for row in cursor.execute("PRAGMA table_info(users)").fetchall()
-    }
-    if "password_hash" not in columns:
-        cursor.execute("ALTER TABLE users ADD COLUMN password_hash TEXT")
-    if "created_at" not in columns:
-        cursor.execute("ALTER TABLE users ADD COLUMN created_at TEXT")
+engine = create_engine(
+    CONNECTION,
+    pool_size=2,
+    max_overflow=0,
+    pool_timeout=30
+    )
+
+session = sessionmaker(
+    engine,
+    expire_on_commit=False,
+    autoflush=False,
+    autocommit=False,
+)
+
+class Database:
+    def __init__(self) -> None:
+        self.session: Optional[Session] = None
+
+    def __aenter__(self):
+        self.session = Session()
+        return self
+
+    def __aexit__(self, exc_type, exc_val, exc_tb):
+        self.session.close()
+
 
 def init_db():
-    conn = db_connect()
-    c = conn.cursor()
-    c.execute("""CREATE TABLE IF NOT EXISTS users (
-            id TEXT PRIMARY KEY,
-            username TEXT,
-            password_hash TEXT,
-            created_at TEXT
-        )""")
-    _ensure_users_schema(c)
+    from app.models.user_model import User
+    from app.models.post_model import Post
+    from app.models.comment_model import Comment
 
-    c.execute("""CREATE TABLE IF NOT EXISTS posts (
-            id TEXT PRIMARY KEY,
-            title TEXT,
-            content TEXT,
-            author_id TEXT,
-            created_at TEXT,
-            FOREIGN KEY(author_id) REFERENCES users(id)
-        )""")
+    with engine.begin() as conn:
+        conn.run(metadata.create_all())
 
-    c.execute("""CREATE TABLE IF NOT EXISTS comments (
-            id TEXT PRIMARY KEY,
-            content TEXT,
-            post_id TEXT,
-            author_id TEXT,
-            created_at TEXT,
-            FOREIGN KEY(post_id) REFERENCES posts(id),
-            FOREIGN KEY(author_id) REFERENCES users(id)
-    )""")
-
-    conn.commit()
-
-    conn.close()
+if __name__ == "__main__":
+    init_db()
