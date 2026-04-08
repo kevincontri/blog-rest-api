@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from app.schemas.schemas import *
-from dependencies import get_user_service
+from dependencies import *
 from typing import List
 
 router = APIRouter(

@@ -1,22 +1,29 @@
-from app.repository.repository import UserRepository
+from app.repository.user_repo import UserRepository
 from app.security.auth import hash_password, verify_password
+from app.exceptions.exceptions import *
 
-class UserService():
-    def verify_credentials(self, username, password):
-        rows = UserRepository.get_user_by_username(username)
+user_repo = UserRepository()
+
+
+class UserService:
+    def verify_credentials(self, username: str, password: str) -> int | dict:
+        rows = user_repo.get_user_by_username(username)
         if rows:
-            if verify_password(password, rows[0]["password_hash"]):
+            if verify_password(password, rows["password_hash"]):
                 return rows
-            return 2
-        return 1
+            raise WrongCredentials("Wrong password")
+        raise NotFoundError("User not found")
 
-    def create_user(self, username, password):
+    def create_user(self, username: str, password: str) -> dict:
         hashed = hash_password(password)
-        new_user = UserRepository.create_user(username, hashed)
+        new_user = user_repo.create_user(username, hashed)
         return new_user
 
-    def get_all_users(self):
-        return UserRepository.get_all_users()
+    def get_all_users(self) -> list[dict]:
+        return user_repo.get_all_users()
 
-    def get_user(self, user_id):
-        return UserRepository.get_user(user_id)
+    def get_user(self, user_id: int) -> dict | None:
+        user = user_repo.get_user(user_id)
+        if user:
+            return user
+        raise NotFoundError("User not found")

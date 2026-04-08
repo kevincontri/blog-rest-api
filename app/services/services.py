@@ -4,43 +4,7 @@ from app.security.auth import hash_password, verify_password
 
 
 
-class PostService():
 
-    def create_post(self, title, content, author_id):
-        user_service = UserService()
-        user_exists = user_service.get_user(author_id)
-        if user_exists:
-            new_post = Post(title, content, author_id)
-            PostRepository.create_post(new_post)
-            return new_post
-        return None
-
-    def get_post(self, post_id):
-        return PostRepository.get_post(post_id)
-
-    def update_post(self, post_id, user_id, title=None, content=None):
-        post_owner = PostRepository.is_post_from_user(post_id, user_id)
-        if post_owner:
-            if title is not None:
-                PostRepository.update_title(title, post_id)
-            if content is not None:
-                PostRepository.update_content(content, post_id)
-            return PostRepository.get_post(post_id)
-        return None
-
-    def delete_post(self, post_id, user_id):
-        post_owner = PostRepository.is_post_from_user(post_id, user_id)
-        if post_owner:
-            PostRepository.delete_post(post_id)
-            return True
-        return None
-
-    def get_post_query(self, author_id, search, sort_by, page, limit):
-        query = PostRepository.get_post_query(author_id, search, sort_by, page, limit)
-        if query:
-            return query
-        else:
-            return []
 
 class CommentService():
 
