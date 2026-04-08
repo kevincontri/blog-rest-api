@@ -1,5 +1,5 @@
-from models import User, Post, Comment
-from database import db_connect
+from app.models import User, Post, Comment
+from app.database import db_connect
 
 class UserRepository:
 

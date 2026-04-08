@@ -1,6 +1,6 @@
-from repository import UserRepository, PostRepository, CommentRepository
-from models import User, Post, Comment
-from auth import hash_password, verify_password
+from app.repository import UserRepository, PostRepository, CommentRepository
+from app.models import User, Post, Comment
+from app.security.auth import hash_password, verify_password
 
 class UserService():
     def verify_credentials(self, username, password):

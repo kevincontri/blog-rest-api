@@ -1,9 +1,9 @@
 from fastapi import FastAPI, HTTPException, Depends
-from schemas import *
-from database import init_db
-from services import UserService, PostService, CommentService
+from app.schemas import *
+from app.database import init_db
+from app.services import UserService, PostService, CommentService
 from typing import List
-from auth import create_access_token, get_current_user
+from app.security.auth import create_access_token, get_current_user
 
 app = FastAPI(
     title="Blog REST API",
