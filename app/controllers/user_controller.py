@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
-from app.schemas.schemas import *
+from app.schemas.user_schemas import *
 from dependencies import *
 from typing import List
+from app.exceptions.exceptions import NotFoundError
 
 router = APIRouter(
     prefix="/users",
@@ -21,8 +22,8 @@ def display_all_users(service: UserService = Depends(get_user_service)):
 
 
 @router.get("/{user_id}", response_model=UserResponse)
-def display_user(user_id: str, service: UserService = Depends(get_user_service)):
-    user = service.get_user(user_id)
-    if user:
-        return user
-    raise HTTPException(status_code=404, detail="User not found")
+def display_user(user_id: int, service: UserService = Depends(get_user_service)):
+    try:
+        return service.get_user(user_id)
+    except NotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
