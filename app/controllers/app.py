@@ -136,8 +136,8 @@ def delete_post(post_id: str, current_user_id: str = Depends(get_current_user)):
 
 """Comments Endpoints"""
 @app.post("/posts/{post_id}/comments", response_model=CommentResponse)
-def create_comment(post_id: str, comment: CommentCreate, current_user_id: str = Depends(get_current_user)):
-    service = CommentService()
+def create_comment(post_id: int, comment: CommentCreate, current_user_id: int = Depends(get_current_user)):
+    service = CommentService() # Add try-except for notFoundError.
     new_comment = service.create_comment(
         post_id,
         current_user_id,

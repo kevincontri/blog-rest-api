@@ -5,7 +5,7 @@ from sqlalchemy import insert, select, delete
 
 class CommentRepository:
 
-    def create_comment(self, content: str, post_id: str, author_id: str) -> dict:
+    def create_comment(self, content: str, post_id: int, author_id: int) -> dict:
         with Database() as db:
             query = (
                 insert(Comment)
@@ -33,9 +33,13 @@ class CommentRepository:
                 return dict(comment._mapping)
             return None
 
-    def delete_comment(self, comment_id: int) -> bool:
+    def delete_comment(self, comment_id: int, user_id: int) -> bool:
         with Database() as db:
-            query = delete(Comment).where(Comment.c.id == comment_id)
+            query = (
+                delete(Comment)
+                .where(Comment.c.id == comment_id)
+                .where(Comment.c.author_id == user_id)
+            )
             db.session.execute(query)
             db.session.commit()
             return True
