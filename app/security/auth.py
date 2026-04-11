@@ -3,19 +3,26 @@ from jose import JWTError, jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 import bcrypt
+import os
+import dotenv
 
-SECRET_KEY = "x7#mK9$pL2@nQ"
+dotenv.load_dotenv()
+
+SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
-def create_access_token(user_id: str) -> str:
+
+def create_access_token(user_id: int) -> str:
     payload = {
-        "sub": user_id,
-        "exp": datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        "sub": str(user_id),
+        "exp": datetime.now(timezone.utc)
+        + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES),
     }
     return jwt.encode(payload, SECRET_KEY, ALGORITHM)
+
 
 def get_current_user(token: str = Depends(oauth2_scheme)) -> str:
     credentials_exception = HTTPException(
@@ -32,19 +39,17 @@ def get_current_user(token: str = Depends(oauth2_scheme)) -> str:
     except JWTError:
         raise credentials_exception
 
+
 def hash_password(password: str) -> str:
-    return bcrypt.hashpw(
-        password.encode("utf-8"),
-        bcrypt.gensalt()
-    ).decode("utf-8")
+    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     if not hashed_password:
         return False
     try:
         return bcrypt.checkpw(
-            plain_password.encode("utf-8"),
-            hashed_password.encode("utf-8")
+            plain_password.encode("utf-8"), hashed_password.encode("utf-8")
         )
     except ValueError:
         return False
