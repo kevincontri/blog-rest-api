@@ -1,62 +1,61 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from dependencies import *
 from app.security.auth import get_current_user
 from app.schemas.post_schemas import *
 from app.services.post_services import PostService
+from typing import List
+from exceptions.exceptions import NotFoundError
 
 router = APIRouter(prefix="/posts", tags=["posts"])
 
+service = PostService()
 
-@router.post("/posts", response_model=PostCreateResponse)
-def create_post(post: PostCreate, current_user_id: str = Depends(get_current_user)):
-    service = PostService()
+
+@router.post("", response_model=PostCreateResponse, status_code=201)
+def create_post(post: PostCreate, current_user_id: int = Depends(get_current_user)):
     post = service.create_post(post.title, post.content, current_user_id)
-    if post:
-        return post.to_dict()
-    raise HTTPException(
-        status_code=400, detail="Bad Request Body - Author ID not found"
-    )
+    return post.to_dict()
 
 
-@app.get("/posts")
+@router.get("", response_model=List[PostResponse], status_code=200)
 def get_posts(
-    author_id: str | None = None,
+    author_id: int | None = None,
     search: str | None = None,
     sort_by: str | None = None,
     page: int = 1,
     limit: int = 10,
 ):
-    service = PostService()
-    query = service.get_post_query(author_id, search, sort_by, page, limit)
-    return query
+    try:
+        return service.get_post_query(author_id, search, sort_by, page, limit)
+    except NotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
-@app.get("/posts/{post_id}", response_model=PostResponse)
-def display_post(post_id: str):
-    service = PostService()
-    post = service.get_post(post_id)
-    if post:
-        return dict(post)
-    raise HTTPException(status_code=404, detail="Post not found")
+@router.get("/{post_id}", response_model=PostResponse, status_code=200)
+def display_post(post_id: int):
+    try:
+        return service.get_post(post_id)
+    except NotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
-@app.patch("/posts/{post_id}", response_model=PostResponse)
+@router.patch("/{post_id}", response_model=PostResponse, status_code=200)
 def update_post(
-    post_id: str, post: PostUpdate, current_user_id: str = Depends(get_current_user)
+    post_id: int, post: PostUpdate, current_user_id: int = Depends(get_current_user)
 ):
-    service = PostService()
-    updated_post = service.update_post(
-        post_id, current_user_id, post.title, post.content
-    )
-    if updated_post:
-        return dict(updated_post)
-    raise HTTPException(status_code=404, detail="Post not found")
+    if post.title is None and post.content is None:
+        raise HTTPException(status_code=400, detail="Bad Request Body")
+    try:
+        return service.update_post(post_id, current_user_id, post.title, post.content)
+    except NotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
-@app.delete("/posts/{post_id}")
-def delete_post(post_id: str, current_user_id: str = Depends(get_current_user)):
-    service = PostService()
-    post_deleted = service.delete_post(post_id, current_user_id)
-    if post_deleted:
-        return {"message": "Post Deleted Successfully"}
-    raise HTTPException(status_code=404, detail="Post not found")
+@router.delete("/{post_id}", status_code=204)
+def delete_post(post_id: int, current_user_id: int = Depends(get_current_user)):
+    try:
+        post_deleted = service.delete_post(post_id, current_user_id)
+        if post_deleted:
+            return
+    except NotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))

@@ -16,14 +16,14 @@ class PostResponse(BaseModel):
     post_author: str
     title: str
     content: str
-    author_id: str
+    author_id: int
     post_date: str
-    post_id: str
+    post_id: int
 
 
 class PostCreateResponse(BaseModel):
-    id: str
+    id: int
     title: str
     content: str
-    author_id: str
+    author_id: int
     created_at: str
