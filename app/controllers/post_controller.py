@@ -17,7 +17,7 @@ def create_post(post: PostCreate, current_user_id: int = Depends(get_current_use
     return post
 
 
-@router.get("", response_model=List[PostResponse], status_code=200)
+@router.get("", status_code=200)
 def get_posts(
     author_id: int | None = None,
     search: str | None = None,
@@ -26,7 +26,8 @@ def get_posts(
     limit: int = 10,
 ):
     try:
-        return service.get_post_query(author_id, search, sort_by, page, limit)
+        posts = service.get_post_query(author_id, search, sort_by, page, limit)
+        return MultiplePostFormat(count=len(posts), posts=posts)
     except NotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
 

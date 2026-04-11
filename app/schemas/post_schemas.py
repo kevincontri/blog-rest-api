@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 
 
 class PostCreate(BaseModel):
@@ -26,3 +26,14 @@ class PostCreateResponse(BaseModel):
     content: str
     author_id: int
     created_at: str
+    
+class MultiplePostResponse(BaseModel):
+    username: str
+    title: str
+    content: str
+    created_at: str
+    id: int
+    
+class MultiplePostFormat(BaseModel):
+    count: int
+    posts: List[MultiplePostResponse]
