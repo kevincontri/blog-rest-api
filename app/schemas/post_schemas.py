@@ -13,12 +13,11 @@ class PostUpdate(BaseModel):
 
 
 class PostResponse(BaseModel):
-    post_author: str
     title: str
     content: str
     author_id: int
-    post_date: str
-    post_id: int
+    created_at: str
+    id: int
 
 
 class PostCreateResponse(BaseModel):

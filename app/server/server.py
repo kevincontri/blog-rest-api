@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from app.database.database import init_db
 from app.controllers import (
     comment_controller,
     post_controller,
@@ -12,7 +13,10 @@ app = FastAPI(
     description="RESTful Blog API in Python using FastAPI and SQLite with JWT authentication, layered architecture, and role-based resource ownership.",
 )
 
+init_db()
+
 app.include_router(user_controller.router)
 app.include_router(post_controller.router)
 app.include_router(comment_controller.router)
 app.include_router(auth_controller.router)
+app.include_router(comment_controller.router2)

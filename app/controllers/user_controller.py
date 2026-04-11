@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from app.schemas.user_schemas import *
-from dependencies import *
+from app.controllers.dependencies import *
 from typing import List
 from app.exceptions.exceptions import NotFoundError
 

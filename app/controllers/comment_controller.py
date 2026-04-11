@@ -1,18 +1,18 @@
 from fastapi import APIRouter, Depends, HTTPException
-from dependencies import *
+from app.controllers.dependencies import *
 from app.schemas.comment_schemas import *
 from app.services.comment_services import CommentService
 from typing import List
-from exceptions.exceptions import NotFoundError
+from app.exceptions.exceptions import NotFoundError
 from app.security.auth import get_current_user
-from app.server.server import app
 
 router = APIRouter(prefix="/comments", tags=["comments"])
+router2 = APIRouter(prefix="/posts/{post_id}/comments", tags=["comments for post"])
 
 service = CommentService()
 
 
-@app.post("/posts/{post_id}/comments", response_model=CommentResponse, status_code=201)
+@router2.post("", response_model=CommentResponse, status_code=201)
 def create_comment(
     post_id: int,
     comment: CommentCreate,
@@ -21,9 +21,7 @@ def create_comment(
     return service.create_comment(post_id, current_user_id, comment.content)
 
 
-@app.get(
-    "/posts/{post_id}/comments", response_model=List[CommentResponse], status_code=200
-)
+@router2.get("", response_model=List[CommentResponse], status_code=200)
 def get_comments_from_post(post_id: int):
     try:
         comments = service.get_comments_from_post(post_id)

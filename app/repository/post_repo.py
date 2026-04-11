@@ -29,7 +29,7 @@ class PostRepository:
                 User.c.id,
                 Post.c.created_at,
                 Post.c.id,
-            ).join(User, User.c.id == Post.c.author_id)
+            ).join(User, User.c.id == Post.c.author_id) 
 
             if author_id:
                 query = query.where(Post.c.author_id == author_id)

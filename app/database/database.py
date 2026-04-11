@@ -3,8 +3,11 @@ from sqlalchemy.orm import sessionmaker, Session
 from typing import Optional
 from .base import metadata
 import os
+import dotenv
 
-CONNECTION = os.getenv("DATABASE_URL", "postgresql+psycopg2:///database.db")
+dotenv.load_dotenv()
+
+CONNECTION = os.getenv("DATABASE_URL", "sqlite3:///database.db")
 
 engine = create_engine(CONNECTION)
 

@@ -5,7 +5,7 @@ from app.exceptions.exceptions import *
 user_repo = UserRepository()
 
 
-class UserService:
+class UserService:    
     def verify_credentials(self, username: str, password: str) -> dict:
         rows = user_repo.get_user_by_username(username)
         if rows:

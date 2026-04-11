@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
-from dependencies import *
+from app.controllers.dependencies import *
 from app.security.auth import get_current_user
 from app.schemas.post_schemas import *
 from app.services.post_services import PostService
 from typing import List
-from exceptions.exceptions import NotFoundError
+from app.exceptions.exceptions import NotFoundError
 
 router = APIRouter(prefix="/posts", tags=["posts"])
 
@@ -14,7 +14,7 @@ service = PostService()
 @router.post("", response_model=PostCreateResponse, status_code=201)
 def create_post(post: PostCreate, current_user_id: int = Depends(get_current_user)):
     post = service.create_post(post.title, post.content, current_user_id)
-    return post.to_dict()
+    return post
 
 
 @router.get("", response_model=List[PostResponse], status_code=200)
