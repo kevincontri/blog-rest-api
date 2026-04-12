@@ -27,7 +27,7 @@ def get_posts(
 ):
     try:
         posts = service.get_post_query(author_id, search, sort_by, page, limit)
-        return MultiplePostFormat(count=len(posts), posts=posts)
+        return MultiplePostFormat(number_of_posts=len(posts), posts=posts)
     except NotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
 

@@ -1,11 +1,11 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional, List
 from app.schemas.comment_schemas import CommentsInPostResponse
 
 
 class PostCreate(BaseModel):
-    title: str
-    content: str
+    title: str = Field(..., min_length=3)
+    content: str = Field(..., min_length=3)
 
 
 class PostUpdate(BaseModel):
@@ -30,7 +30,7 @@ class MultiplePostResponse(BaseModel):
 
 
 class MultiplePostFormat(BaseModel):
-    count: int
+    number_of_posts: int
     posts: List[MultiplePostResponse]
 
 
