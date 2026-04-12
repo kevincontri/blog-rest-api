@@ -42,3 +42,9 @@ class PostService:
         if query:
             return query
         raise NotFoundError("Post not found")
+    
+    def get_comments_from_post(self, post_id: int) -> list[dict]:
+        comments = post_repo.get_comments_from_post(post_id)
+        if not comments:
+            return []
+        return comments

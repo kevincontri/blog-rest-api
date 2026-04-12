@@ -1,5 +1,6 @@
 from app.models.post_model import Post
 from app.models.user_model import User
+from app.models.comment_model import Comment
 from app.database.database import Database
 from sqlalchemy import insert, select, desc, update, delete
 
@@ -29,7 +30,7 @@ class PostRepository:
                 User.c.id,
                 Post.c.created_at,
                 Post.c.id,
-            ).join(User, User.c.id == Post.c.author_id) 
+            ).join(User, User.c.id == Post.c.author_id)
 
             if author_id:
                 query = query.where(Post.c.author_id == author_id)
@@ -89,3 +90,20 @@ class PostRepository:
             result = db.session.execute(query)
             post = result.one_or_none()
             return post
+
+    def get_comments_from_post(self, post_id: int) -> list[dict]:
+        with Database() as db:
+            results = (
+                db.session.query(
+                    User.c.username,
+                    User.c.id.label("user_id"),
+                    Comment.c.content,
+                    Comment.c.created_at,
+                    Comment.c.id.label("comment_id"),
+                )
+                .join(Comment, User.c.id == Comment.c.author_id)
+                .where(Comment.c.post_id == post_id)
+                .all()
+            )
+
+            return [comment._asdict() for comment in results]

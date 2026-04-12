@@ -11,3 +11,11 @@ class CommentResponse(BaseModel):
     id: int
     author_id: int
     post_id: int
+
+
+class CommentsInPostResponse(BaseModel):
+    username: str
+    user_id: int
+    content: str
+    created_at: str
+    comment_id: int
