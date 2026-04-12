@@ -10,20 +10,28 @@ router = APIRouter(
 )
 
 
-@router.post("", response_model=UserResponse, status_code=201)
+@router.post("", response_model=RegularUserResponse, status_code=201)
 def create_user(data: UserCreate, service: UserService = Depends(get_user_service)):
     user = service.create_user(data.username, data.password)
     return user
 
 
-@router.get("", response_model=List[UserResponse], status_code=200)
+@router.get("", status_code=200)
 def display_all_users(service: UserService = Depends(get_user_service)):
-    return service.get_all_users()
+    users = service.get_all_users()
+    return MultipleUserResponse(count=len(users), users=users)
 
 
-@router.get("/{user_id}", response_model=UserResponse, status_code=200)
+@router.get("/{user_id}", status_code=200)
 def display_user(user_id: int, service: UserService = Depends(get_user_service)):
     try:
-        return service.get_user(user_id)
+        user_data = service.get_user(user_id)
+        post_data = service.get_user_posts(user_id)
+        return UserResponseWithPosts(
+            username=user_data["username"],
+            id=user_data["id"],
+            created_at=user_data["created_at"],
+            posts=post_data,
+        )
     except NotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))

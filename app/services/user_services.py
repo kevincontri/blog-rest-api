@@ -27,3 +27,9 @@ class UserService:
         if user:
             return user
         raise NotFoundError("User not found")
+    
+    def get_user_posts(self, user_id: int) -> list[dict]:
+        posts = user_repo.get_user_posts(user_id)
+        if not posts:
+            return []
+        return posts
