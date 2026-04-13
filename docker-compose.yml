@@ -1,0 +1,36 @@
+name: blog_rest_api
+
+services:
+  api:
+    build: .
+    ports:
+      - "8080:8080"
+    env_file:
+    - .env
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/blog_rest_api
+    depends_on:
+      - db
+    networks:
+      - blog_network
+    restart: unless-stopped
+    
+
+  db:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=blog_rest_api
+    networks:
+      - blog_network
+    restart: unless-stopped
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+   postgres_data:
+
+networks:
+      blog_network:
+        driver: bridge
