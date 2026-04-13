@@ -16,7 +16,8 @@ class CommentRepository:
             result = db.session.execute(query)
             db.session.commit()
             inserted_comment = result.fetchone()
-            return dict(inserted_comment._mapping)
+            formatted_comment = self.get_comment(inserted_comment.id)
+            return formatted_comment
 
     def get_comments_by_post(self, post_id: int) -> list[dict]:
         with Database() as db:
