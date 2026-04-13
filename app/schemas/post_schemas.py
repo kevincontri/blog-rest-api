@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import Optional, List
-from app.schemas.comment_schemas import CommentsInPostResponse
+from app.schemas.comment_schemas import CommentResponse
 
 
 class PostCreate(BaseModel):
@@ -36,4 +36,4 @@ class MultiplePostFormat(BaseModel):
 
 class PostWithCommentsResponse(BaseModel):
     post: PostResponse
-    post_comments: List[CommentsInPostResponse]
+    post_comments: List[CommentResponse]

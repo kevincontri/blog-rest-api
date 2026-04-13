@@ -1,4 +1,5 @@
 from app.models.comment_model import Comment
+from app.models.user_model import User
 from app.database.database import Database
 from sqlalchemy import insert, select, delete
 
@@ -19,19 +20,39 @@ class CommentRepository:
 
     def get_comments_by_post(self, post_id: int) -> list[dict]:
         with Database() as db:
-            query = select(Comment).where(Comment.c.post_id == post_id)
-            result = db.session.execute(query)
-            comments = result.all()
-            return [dict(comment._mapping) for comment in comments]
+            results = (
+                db.session.query(
+                    User.c.username,
+                    User.c.id.label("user_id"),
+                    Comment.c.content,
+                    Comment.c.created_at,
+                    Comment.c.id.label("comment_id"),
+                )
+                .join(Comment, User.c.id == Comment.c.author_id)
+                .where(Comment.c.post_id == post_id)
+                .all()
+            )
+
+            return [comment._asdict() for comment in results]
 
     def get_comment(self, comment_id: int) -> dict | None:
         with Database() as db:
-            query = select(Comment).where(Comment.c.id == comment_id).limit(1)
-            result = db.session.execute(query)
-            comment = result.one_or_none()
-            if comment:
-                return dict(comment._mapping)
-            return None
+            results = (
+                db.session.query(
+                    User.c.username,
+                    User.c.id.label("user_id"),
+                    Comment.c.content,
+                    Comment.c.created_at,
+                    Comment.c.id.label("comment_id"),
+                )
+                .join(Comment, User.c.id == Comment.c.author_id)
+                .where(Comment.c.id == comment_id)
+                .one_or_none()
+            )
+
+            if not results:
+                return None
+            return dict(results._mapping)
 
     def delete_comment(self, comment_id: int, user_id: int) -> bool:
         with Database() as db:
