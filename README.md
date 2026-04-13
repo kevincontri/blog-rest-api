@@ -7,6 +7,7 @@
 - Improved responses for each request, with more relevant data.
 - Dependency injection in API routes.
 - Integraded APIRouters for better organization of routes.
+- Application dockerized.
 
 A backend service in a REST-style for managing users, posts and comments using `FastAPI`. This project demonstrates fundamental backend development concepts, such as:
 
@@ -17,6 +18,7 @@ A backend service in a REST-style for managing users, posts and comments using `
 - Relational logic (users, posts and comments)
 - HTTP status handling with FastAPI
 - JWT Authentication and Authorization
+- Docker as infrastructure
 
 This application allows creation of users, authoring of posts, and commenting on posts, with authentication ensuring users can only modify their own content.
 
@@ -27,6 +29,7 @@ This application allows creation of users, authoring of posts, and commenting on
 - Pydantic
 - SQL
 - Uvicorn
+- Docker
 
 ## Main Dependencies
 
@@ -49,7 +52,28 @@ This application allows creation of users, authoring of posts, and commenting on
 - `requirements.txt` - Dependencies
 - `run.py` - Entry point of application, runs the FastAPI server.
 
-## Installation
+## Option 1 - Installation with Docker
+
+Clone the repository:
+
+```
+git clone https://github.com/kevincontri/blog-rest-api.git
+cd blog-rest-api
+```
+
+Start all services (first time):
+
+```
+docker compose up --build
+```
+
+Start the app (after first time):
+
+```
+docker compose up
+```
+
+## Option 2 - Installation without Docker
 
 Clone the repository:
 
