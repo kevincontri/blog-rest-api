@@ -1,8 +1,6 @@
-from app.models.comment_model import Comment
 from app.repository.comment_repo import CommentRepository
 from app.services.post_services import PostService
 from app.database.database import Database
-from sqlalchemy import insert, select
 from app.exceptions.exceptions import NotFoundError
 
 post_service = PostService()

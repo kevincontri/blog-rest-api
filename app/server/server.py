@@ -9,8 +9,8 @@ from app.controllers import (
 
 app = FastAPI(
     title="Blog REST API",
-    version="2.0",
-    description="RESTful Blog API in Python using FastAPI and SQLite with JWT authentication, layered architecture, and role-based resource ownership.",
+    version="3.0",
+    description="RESTful Blog API in Python using FastAPI and SQL with JWT authentication, layered architecture, and role-based resource ownership.",
 )
 
 init_db()
