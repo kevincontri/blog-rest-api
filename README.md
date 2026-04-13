@@ -28,10 +28,12 @@ This application allows creation of users, authoring of posts, and commenting on
 - SQL
 - Uvicorn
 
-## Dependencies
+## Main Dependencies
 
+- sqlalchemy (ORM)
 - JWT (Authentication)
 - bcrypt (password hashing)
+- psycopg (PostgreSQL integration with SQLAlchemy)
 
 ## Project Structure
 
@@ -67,6 +69,20 @@ Install dependencies:
 
 ```
 pip install -r requirements.txt
+```
+
+## Environment Variables
+
+Create a .env files and add:
+
+```
+DATABASE_URL (For your PostgreSQL connection handling)
+```
+
+and
+
+```
+SECRET_KEY (For your JWT secret key)
 ```
 
 ## Run the server
