@@ -1,13 +1,16 @@
 # Blog REST API
 
-## Update v2.0: Added password hashing and credential-based login (bcrypt)
+## Update v3.0:
+- New code structure following an MVC pattern.
+- SQLAlchemy integration.
+- Improved responses for each request, with more relevant data.
 
 A backend service in a REST-style for managing users, posts and comments using `FastAPI`. This project demonstrates fundamental backend development concepts, such as:
 
 * RESTful routing
-* Layered architecture
+* Layered architecture in MVC pattern
 * Request and response validation with Pydantic
-* SQL-based persistence with SQLite
+* SQL-based persistence with SQLAlchemy integration.
 * Relational logic (users, posts and comments)
 * HTTP status handling with FastAPI
 * JWT Authentication and Authorization
@@ -19,7 +22,7 @@ This application allows creation of users, authoring of posts, and commenting on
 * Python
 * FastAPI
 * Pydantic
-* SQLite
+* SQL
 * Uvicorn
 
 ## Dependencies
