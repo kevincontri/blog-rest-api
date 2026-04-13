@@ -1,6 +1,25 @@
 # Blog REST API
 
-## Update v3.0:
+A backend service in a REST-style for managing users, posts and comments using `FastAPI`.
+
+## Table of contents:
+
+- [Last Updates](#last-update-v30)
+- [Stacks](#stack)
+- [Main Dependencies](#main-dependencies)
+- [Project Structure](#project-structure)
+- [Installation with Docker](#option-1---installation-with-docker)
+- [Installation without Docker](#option-2---installation-without-docker)
+- [Environment Variables](#environment-variables)
+- [Run the Server](#run-the-server)
+- [User's registry](#register)
+- [User's login](#login)
+- [User's endpoints](#api-user-endpoints)
+- [Post's endpoints](#api-post-endpoints)
+- [Comment's endpoints](#api-comment-endpoints)
+- [Future improvements](#future-improvements)
+
+## Last update (v3.0):
 
 - New code structure following an MVC pattern.
 - SQLAlchemy integration.
@@ -9,7 +28,7 @@
 - Integraded APIRouters for better organization of routes.
 - Application dockerized.
 
-A backend service in a REST-style for managing users, posts and comments using `FastAPI`. This project demonstrates fundamental backend development concepts, such as:
+This project demonstrates fundamental backend development concepts, such as:
 
 - RESTful routing
 - Layered architecture in MVC pattern
