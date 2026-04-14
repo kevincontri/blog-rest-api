@@ -341,5 +341,4 @@ Response:
 
 ## Future Improvements
 
-- Dockerize application.
 - Add refresh tokens for better session management
